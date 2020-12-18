@@ -30,12 +30,12 @@ DB_FILE = os.path.join(APPDIR, 'db', 'lunarcal.sqlite')
 RE_CAL = re.compile('(\d{4})年(\d{1,2})月(\d{1,2})日')
 #PROXY = {'http': 'http://localhost:8001'}
 PROXY = None
-URL = 'https://www.hko.gov.hk/tc/gts/time/calendar/text/files/T%dc.txt'
+URL = 'http://www.hko.gov.hk/tc/gts/time/calendar/text/files/T%dc.txt'
 OUTPUT = os.path.join(APPDIR, 'chinese_lunar_%s_%s.ics')
 OUTPUT_JIEQI = os.path.join(APPDIR, 'jieqi_tch_%s_%s.ics')
 
 ICAL_HEAD = ('BEGIN:VCALENDAR\n'
-             'PRODID:-//Chen Wei//Chinese Lunar Calendar//EN\n'
+             'PRODID://DINGDANGNAO//\n'
              'VERSION:2.0\n'
              'CALSCALE:GREGORIAN\n'
              'METHOD:PUBLISH\n'
@@ -54,7 +54,7 @@ ICAL_SEC = ('BEGIN:VEVENT\n'
 
 ICAL_END = 'END:VCALENDAR'
 
-CN_DAY = {'初二': 2, '初三': 3, '初四': 4, '初五': 5, '初六': 6,
+CN_DAY = {'初一': 1, '初二': 2, '初三': 3, '初四': 4, '初五': 5, '初六': 6,
           '初七': 7, '初八': 8, '初九': 9, '初十': 10, '十一': 11,
           '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16,
           '十七': 17, '十八': 18, '十九': 19, '二十': 20, '廿一': 21,
@@ -186,20 +186,23 @@ def gen_cal(start, end, fp):
 
     lines = [ICAL_HEAD]
     oneday = timedelta(days=1)
+    month = ''
     for r in rows:
         dt = datetime.strptime(r['date'], '%Y-%m-%d')
-
+    
         if r['lunardate'] in list(CN_MON.keys()):
-            ld = ['%s%s' % (lunaryear(r['date']), r['lunardate'])]
+            ld = ['%s - %s' % (r['lunardate'],lunaryear(r['date']))]
+            month = r['lunardate']
         else:
-            ld = [r['lunardate']]
+            ld = ['%s %s' % (month,r['lunardate'])]
         if r['holiday']:
             ld.append(r['holiday'])
         if r['jieqi']:
             ld.append(r['jieqi'])
-        uid = '%s-lc@infinet.github.io' % r['date']
-        summary = ' '.join(ld)
-        utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
+        uid = '%s@com.dingdangnao.calendar.ical.lunar' % r['date']
+        summary = ' | '.join(ld)
+        # utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
+        utcstamp = int(datetime.strptime(r['date'],'%Y-%m-%d').timestamp()*1000)
         line = ICAL_SEC % (utcstamp, uid, dt.strftime('%Y%m%d'),
                        (dt + oneday).strftime('%Y%m%d'), summary)
         lines.append(line)
