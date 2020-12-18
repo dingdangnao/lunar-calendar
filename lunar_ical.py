@@ -31,7 +31,8 @@ RE_CAL = re.compile('(\d{4})年(\d{1,2})月(\d{1,2})日')
 #PROXY = {'http': 'http://localhost:8001'}
 PROXY = None
 URL = 'http://www.hko.gov.hk/tc/gts/time/calendar/text/files/T%dc.txt'
-OUTPUT = os.path.join(APPDIR, 'chinese_lunar_%s_%s.ics')
+OUTPUT = os.path.join(APPDIR, 'CHN_LUNAR.ics')
+OUTPUT_OPT = os.path.join(APPDIR, 'chinese_lunar_%s_%s.ics')
 OUTPUT_JIEQI = os.path.join(APPDIR, 'jieqi_tch_%s_%s.ics')
 
 ICAL_HEAD = ('BEGIN:VCALENDAR\n'
@@ -400,9 +401,9 @@ def main():
         post_process()  # fix error in HK data
         update_holiday()
     if len(sys.argv) == 1:
-        fp = OUTPUT % ('prev_year', 'next_year')
+        fp = OUTPUT
     else:
-        fp = OUTPUT % (start, end)
+        fp = OUTPUT_OPT % (start, end)
 
     if jieqionly:
         if len(sys.argv) == 1:
@@ -413,9 +414,9 @@ def main():
         gen_cal_jieqi_only(start, end, fp)
     else:
         if len(sys.argv) == 1:
-            fp = OUTPUT % ('prev_year', 'next_year')
+            fp = OUTPUT
         else:
-            fp = OUTPUT % (start, end)
+            fp = OUTPUT_OPT % (start, end)
 
         gen_cal(start, end, fp)
 
