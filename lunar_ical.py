@@ -64,7 +64,7 @@ CN_DAY = {'初一': 1, '初二': 2, '初三': 3, '初四': 4, '初五': 5, '初�
 
 CN_MON = {'正月': 1, '二月': 2, '三月': 3, '四月': 4,
           '五月': 5, '六月': 6, '七月': 7, '八月': 8,
-          '九月': 9, '十月': 10, '十一月': 11, '十二月': 12,
+          '九月': 9, '十月': 10, '冬月': 11, '腊月': 12,
 
           '閏正月': 101, '閏二月': 102, '閏三月': 103, '閏四月': 104,
           '閏五月': 105, '閏六月': 106, '閏七月': 107, '閏八月': 108,
@@ -192,16 +192,19 @@ def gen_cal(start, end, fp):
         dt = datetime.strptime(r['date'], '%Y-%m-%d')
     
         if r['lunardate'] in list(CN_MON.keys()):
-            ld = ['%s - %s' % (r['lunardate'],lunaryear(r['date']))]
+            if r['lunardate'] == '正月':
+                ld = ['%s年｜%s初一' % (lunaryear(r['date']),r['lunardate'])]
+            else:
+                ld = ['%s初一' % (r['lunardate'])]
             month = r['lunardate']
         else:
-            ld = ['%s %s' % (month,r['lunardate'])]
+            ld = ['%s%s' % (month,r['lunardate'])]
         if r['holiday']:
             ld.append(r['holiday'])
         if r['jieqi']:
             ld.append(r['jieqi'])
         uid = '%s@com.dingdangnao.calendar.ical.lunar' % r['date']
-        summary = ' | '.join(ld)
+        summary = '｜'.join(ld)
         # utcstamp = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
         utcstamp = int(datetime.strptime(r['date'],'%Y-%m-%d').timestamp()*1000)
         line = ICAL_SEC % (utcstamp, uid, dt.strftime('%Y%m%d'),
