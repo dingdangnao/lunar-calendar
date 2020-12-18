@@ -194,16 +194,19 @@ def gen_cal(start, end, fp):
         if r['lunardate'] in list(CN_MON.keys()):
             if r['lunardate'] == '正月':
                 ld = ['%s年｜%s初一' % (lunaryear(r['date']),r['lunardate'])]
+            elif r['lunardate'] == '十一月':
+                ld = ['冬月初一']
+            elif r['lunardate'] == '十二月':
+                ld = ['腊月初一']
             else:
                 ld = ['%s初一' % (r['lunardate'])]
-            
+
             if r['lunardate'] == '十一月':
                 month = '冬月'
+            elif r['lunardate'] == '十二月':
+                month = '腊月'
             else:
-                if r['lunardate'] == '十二月':
-                    month = '腊月'
-                else:
-                    month = r['lunardate']
+                month = r['lunardate']
         else:
             ld = ['%s%s' % (month,r['lunardate'])]
         if r['holiday']:
