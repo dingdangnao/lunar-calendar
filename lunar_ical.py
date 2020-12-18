@@ -364,8 +364,8 @@ def lunaryear(isodate):
 
 def main():
     cy = datetime.today().year
-    start = '%d-01-01' % (cy - 1)
-    end = '%d-12-31' % (cy + 1)
+    start = '%d-01-01' % (cy - 2)
+    end = '%d-12-31' % (cy + 2)
 
     helpmsg = ('Usage: lunar_ical.py --start=startdate --end=enddate --jieqi\n'
 'Example: \n'
@@ -373,8 +373,8 @@ def main():
 'Or to generate Jieqi only:\n'
 '\tlunar_ical.py --start=2013-10-31 --end=2015-12-31 --jieqi\n'
 'Or,\n'
-'\tlunar_ical.py without option will generate the calendar from previous year '
-'to the end of the next year')
+'\tlunar_ical.py without option will generate the calendar from previous 2 years '
+'to the end of the next 2 years')
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'h',
